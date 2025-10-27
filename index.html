@@ -1,150 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Love Page 💖</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoveNoteWeb 💖</title>
   <style>
     body {
-      font-family: 'Playfair Display', serif;
-      background: linear-gradient(to bottom, #301934, #ff6b6b);
-      color: #fff;
+      font-family: Arial, sans-serif;
+      background: #ffe6f2;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
-    .bg-romantic {
-      background: linear-gradient(135deg, #ff6b81, #ff9472);
+    h1 {
+      color: #ff4da6;
     }
-    .glass {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
+    #notes, #images {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    button {
+      background: #ff4da6;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #e60073;
+    }
+    img {
+      width: 100%;
+      max-width: 250px;
+      border-radius: 12px;
+      margin: 10px 0;
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen p-6">
 
-<!-- Encabezado -->
-<section class="text-center mb-16">
-  <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
-    Our Love Story 💕
-  </h1>
-  <p class="text-xl text-white/80">Lugar dedicado a mi Ailyn. Te amo, mi pelusita.</p>
-</section>
+<body>
 
-<!-- Contadores -->
-<section class="mb-16 text-center">
-  <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
-  <p id="tiempoJuntos" class="text-xl"></p>
+<script>
+  const password = "fR7!cM9#Lp2X";
+  const userInput = prompt("🔐 Ingresa la contraseña para acceder:");
 
-  <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
-  <p id="contadorSanValentin" class="text-xl"></p>
-</section>
+  if (userInput !== password) {
+    document.body.innerHTML = "<h2 style='color:red;margin-top:20%'>Acceso Denegado ❌</h2>";
+    throw new Error("Acceso bloqueado");
+  }
+</script>
 
-<!-- Notas -->
-<section class="mb-16">
-  <h2 class="text-3xl font-semibold mb-4 text-center">📝 Notas de Amor</h2>
-  <div class="max-w-xl mx-auto">
-    <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
-    <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
-    <div id="notesList" class="mt-6 space-y-4"></div>
-  </div>
-</section>
+<h1>LoveNoteWeb 💌</h1>
+<p>Un lugar secreto para nosotros ❤️</p>
 
-<!-- Firebase -->
+<div id="notes"></div>
+
+<textarea id="noteInput" placeholder="Escribe una nota bonita aquí..."></textarea><br>
+<button onclick="saveNote()">💾 Guardar Nota</button>
+
+<h3>Subir imagen 📸</h3>
+<input type="file" id="imageInput" accept="image/*"><br>
+<button onclick="uploadImage()">⬆️ Subir Imagen</button>
+
+<div id="images"></div>
+
+
+<!-- ✅ Firebase -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import {
+    getDatabase, ref, push, onValue
+  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+  import {
+    getStorage, ref as storageRef, uploadBytes, getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-  // Tu configuración de Firebase
   const firebaseConfig = {
-  apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg", // <- tu API Key real
-  authDomain: "lovenotes-e4c9d.firebaseapp.com",
-  databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
-  projectId: "lovenotes-e4c9d",
-  storageBucket: "lovenotes-e4c9d.firebasestorage.app",
-  messagingSenderId: "595596507789",
-  appId: "1:595596507789:web:533ced8f0b895746d940c4",
-  measurementId: "G-6BEVEG72FD"
-};
+    apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
+    authDomain: "lovenotes-e4c9d.firebaseapp.com",
+    databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
+    projectId: "lovenotes-e4c9d",
+    storageBucket: "lovenotes-e4c9d.firebasestorage.app",
+    messagingSenderId: "595596507789",
+    appId: "1:595596507789:web:533ced8f0b895746d940c4",
+    measurementId: "G-6BEVEG72FD"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const notasRef = ref(db, "notas");
+  const storage = getStorage(app);
 
-  const saveButton = document.getElementById("saveButton");
-  const noteInput = document.getElementById("noteInput");
-  const notesList = document.getElementById("notesList");
+  const notesRef = ref(db, "notes");
+  const imgRef = ref(db, "images");
 
-  saveButton.addEventListener("click", () => {
-    const nota = noteInput.value.trim();
-    if (!nota) return;
-    push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
-    noteInput.value = "";
-  });
+  // ✅ Guardar notas
+  window.saveNote = () => {
+    const text = document.getElementById("noteInput").value.trim();
+    if (!text) return alert("Escribe algo bonito ❤️");
+    
+    push(notesRef, text);
+    document.getElementById("noteInput").value = "";
+  };
 
-  function eliminarNota(key) {
-    remove(ref(db, "notas/" + key));
-  }
-
-  onValue(notasRef, (snapshot) => {
-    notesList.innerHTML = "";
-    snapshot.forEach((child) => {
-      const nota = child.val();
-      const key = child.key;
-      const div = document.createElement("div");
-      div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
+  // ✅ Mostrar notas en vivo
+  onValue(notesRef, snapshot => {
+    const notesDiv = document.getElementById("notes");
+    notesDiv.innerHTML = "";
+    snapshot.forEach(child => {
       const p = document.createElement("p");
-      p.textContent = nota.texto;
-      const small = document.createElement("small");
-      small.className = "text-white/60";
-      small.textContent = nota.fecha;
-      const deleteBtn = document.createElement("button");
-      deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
-      deleteBtn.textContent = "Eliminar";
-      deleteBtn.addEventListener("click", () => eliminarNota(key));
-      const infoDiv = document.createElement("div");
-      infoDiv.appendChild(p);
-      infoDiv.appendChild(small);
-      div.appendChild(infoDiv);
-      div.appendChild(deleteBtn);
-      notesList.appendChild(div);
+      p.innerText = "💖 " + child.val();
+      notesDiv.appendChild(p);
     });
   });
 
-  // Contador de Tiempo Juntos
-  function actualizarTiempoJuntos() {
-    const inicio = new Date("2025-01-21T00:00:00");
-    const ahora = new Date();
-    let diff = Math.floor((ahora - inicio) / 1000);
-    const dias = Math.floor(diff / 86400);
-    diff %= 86400;
-    const horas = Math.floor(diff / 3600);
-    diff %= 3600;
-    const minutos = Math.floor(diff / 60);
-    const segundos = diff % 60;
-    document.getElementById("tiempoJuntos").textContent =
-      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-  }
-  setInterval(actualizarTiempoJuntos, 1000);
+  // ✅ Subir imágenes
+  window.uploadImage = () => {
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) return alert("Selecciona una imagen 📸");
 
-  // Contador para San Valentín
-  function actualizarContadorSanValentin() {
-    const ahora = new Date();
-    const anoActual = ahora.getFullYear();
-    let sv = new Date(`February 14, ${anoActual} 00:00:00`);
-    if (ahora > sv) sv.setFullYear(anoActual + 1);
-    const diff = sv - ahora;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutos = Math.floor((diff / (1000 * 60)) % 60);
-    const segundos = Math.floor((diff / 1000) % 60);
-    document.getElementById("contadorSanValentin").textContent =
-      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-  }
-  setInterval(actualizarContadorSanValentin, 1000);
+    const imgStorage = storageRef(storage, "images/" + file.name);
+    
+    uploadBytes(imgStorage, file).then(snapshot => {
+      getDownloadURL(snapshot.ref).then(url => {
+        push(imgRef, url);
+      });
+    });
+  };
+
+  // ✅ Mostrar imágenes en vivo
+  onValue(imgRef, snapshot => {
+    const imgDiv = document.getElementById("images");
+    imgDiv.innerHTML = "";
+    snapshot.forEach(child => {
+      const img = document.createElement("img");
+      img.src = child.val();
+      imgDiv.appendChild(img);
+    });
+  });
 
 </script>
+
 </body>
 </html>
-
-
