@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Love Story 💖</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  body {
-    font-family: 'Playfair Display', serif;
-    background: linear-gradient(to bottom, #301934, #ff6b6b);
-    color: #fff;
-    cursor: pointer;
-  }
-  .bg-romantic {
-    background: linear-gradient(135deg, #ff6b81, #ff9472);
-  }
-  .glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-  }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Love Story 💖</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(to bottom, #301934, #ff6b6b);
+      color: #fff;
+    }
+    .bg-romantic {
+      background: linear-gradient(135deg, #ff6b81, #ff9472);
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen p-6">
 
@@ -51,140 +50,98 @@
   </div>
 </section>
 
-<h2 id="mensajeCancion" class="text-center mb-8">Toca la pantalla para escuchar 505 🎧</h2>
-
 <!-- Firebase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
-  authDomain: "lovenotes-e4c9d.firebaseapp.com",
-  databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
-  projectId: "lovenotes-e4c9d",
-  storageBucket: "lovenotes-e4c9d.firebasestorage.app",
-  messagingSenderId: "595596507789",
-  appId: "1:595596507789:web:533ced8f0b895746d940c4",
-  measurementId: "G-6BEVEG72FD"
-};
+  // Tu configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY_REAL_AQUI",
+    authDomain: "lovenotes-e4c9d.firebaseapp.com",
+    databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
+    projectId: "lovenotes-e4c9d",
+    storageBucket: "lovenotes-e4c9d.appspot.com",
+    messagingSenderId: "595596507789",
+    appId: "1:595596507789:web:533ced8f0b895746d940c4"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const notasRef = ref(db, "notas");
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const notasRef = ref(db, "notas");
 
-const saveButton = document.getElementById("saveButton");
-const noteInput = document.getElementById("noteInput");
-const notesList = document.getElementById("notesList");
+  const saveButton = document.getElementById("saveButton");
+  const noteInput = document.getElementById("noteInput");
+  const notesList = document.getElementById("notesList");
 
-saveButton.addEventListener("click", () => {
-  const nota = noteInput.value.trim();
-  if (!nota) return;
-  push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
-  noteInput.value = "";
-});
-
-function eliminarNota(key) {
-  remove(ref(db, "notas/" + key));
-}
-
-onValue(notasRef, (snapshot) => {
-  notesList.innerHTML = "";
-  snapshot.forEach((child) => {
-    const nota = child.val();
-    const key = child.key;
-    const div = document.createElement("div");
-    div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
-    const p = document.createElement("p");
-    p.textContent = nota.texto;
-    const small = document.createElement("small");
-    small.className = "text-white/60";
-    small.textContent = nota.fecha;
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
-    deleteBtn.textContent = "Eliminar";
-    deleteBtn.addEventListener("click", () => eliminarNota(key));
-    const infoDiv = document.createElement("div");
-    infoDiv.appendChild(p);
-    infoDiv.appendChild(small);
-    div.appendChild(infoDiv);
-    div.appendChild(deleteBtn);
-    notesList.appendChild(div);
+  saveButton.addEventListener("click", () => {
+    const nota = noteInput.value.trim();
+    if (!nota) return;
+    push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
+    noteInput.value = "";
   });
-});
 
-// Contador de Tiempo Juntos
-function actualizarTiempoJuntos() {
-  const inicio = new Date("2025-01-21T00:00:00");
-  const ahora = new Date();
-  let diff = Math.floor((ahora - inicio) / 1000);
-  const dias = Math.floor(diff / 86400);
-  diff %= 86400;
-  const horas = Math.floor(diff / 3600);
-  diff %= 3600;
-  const minutos = Math.floor(diff / 60);
-  const segundos = diff % 60;
-  document.getElementById("tiempoJuntos").textContent =
-    `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-}
-setInterval(actualizarTiempoJuntos, 1000);
-
-// Contador para San Valentín
-function actualizarContadorSanValentin() {
-  const ahora = new Date();
-  const anoActual = ahora.getFullYear();
-  let sv = new Date(`February 14, ${anoActual} 00:00:00`);
-  if (ahora > sv) sv.setFullYear(anoActual + 1);
-  const diff = sv - ahora;
-  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutos = Math.floor((diff / (1000 * 60)) % 60);
-  const segundos = Math.floor((diff / 1000) % 60);
-  document.getElementById("contadorSanValentin").textContent =
-    `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-}
-setInterval(actualizarContadorSanValentin, 1000);
-
-</script>
-
-<!-- YouTube invisible 505
-     Notes:
-     - autoplay=1&mute=1 so it can start muted (browsers allow muted autoplay)
-     - enablejsapi=1 to allow sending commands (unMute/playVideo)
-     - playsinline=1 to avoid forcing fullscreen on iOS
--->
-<iframe id="youtube505" width="1" height="1"
-src="https://www.youtube.com/embed/0J2QdDbelmY?autoplay=1&mute=1&controls=0&loop=1&playlist=0J2QdDbelmY&enablejsapi=1&playsinline=1"
-frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-<script>
-const iframe = document.getElementById('youtube505');
-const mensaje = document.getElementById('mensajeCancion');
-
-function desbloquearAudio(e) {
-  // Must be called directly from a user gesture (touchend or click)
-  mensaje.innerText = "Reproduciendo 505... ❤️‍🔥";
-
-  // Tell the YouTube iframe (IFrame API) to unmute and play
-  // PostMessage commands as JSON strings; enablejsapi=1 must be present in src
-  try {
-    iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-  } catch (err) {
-    // ignore — in some cases cross-origin access is blocked; still likely works via postMessage
-    console.warn('Error sending postMessage to iframe', err);
+  function eliminarNota(key) {
+    remove(ref(db, "notas/" + key));
   }
 
-  // Remove the listeners so this runs only once
-  document.removeEventListener('touchend', desbloquearAudio);
-  document.removeEventListener('click', desbloquearAudio);
-}
+  onValue(notasRef, (snapshot) => {
+    notesList.innerHTML = "";
+    snapshot.forEach((child) => {
+      const nota = child.val();
+      const key = child.key;
+      const div = document.createElement("div");
+      div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
+      const p = document.createElement("p");
+      p.textContent = nota.texto;
+      const small = document.createElement("small");
+      small.className = "text-white/60";
+      small.textContent = nota.fecha;
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
+      deleteBtn.textContent = "Eliminar";
+      deleteBtn.addEventListener("click", () => eliminarNota(key));
+      const infoDiv = document.createElement("div");
+      infoDiv.appendChild(p);
+      infoDiv.appendChild(small);
+      div.appendChild(infoDiv);
+      div.appendChild(deleteBtn);
+      notesList.appendChild(div);
+    });
+  });
 
-// Listen for both touchend (mobile) and click (desktop).
-// Use { once: true } OR remove listeners inside the handler to guarantee single-run.
-document.addEventListener('touchend', desbloquearAudio, { passive: true, once: true });
-document.addEventListener('click', desbloquearAudio, { once: true });
+  // Contador de Tiempo Juntos
+  function actualizarTiempoJuntos() {
+    const inicio = new Date("2025-01-21T00:00:00");
+    const ahora = new Date();
+    let diff = Math.floor((ahora - inicio) / 1000);
+    const dias = Math.floor(diff / 86400);
+    diff %= 86400;
+    const horas = Math.floor(diff / 3600);
+    diff %= 3600;
+    const minutos = Math.floor(diff / 60);
+    const segundos = diff % 60;
+    document.getElementById("tiempoJuntos").textContent =
+      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+  }
+  setInterval(actualizarTiempoJuntos, 1000);
+
+  // Contador para San Valentín
+  function actualizarContadorSanValentin() {
+    const ahora = new Date();
+    const anoActual = ahora.getFullYear();
+    let sv = new Date(`February 14, ${anoActual} 00:00:00`);
+    if (ahora > sv) sv.setFullYear(anoActual + 1);
+    const diff = sv - ahora;
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutos = Math.floor((diff / (1000 * 60)) % 60);
+    const segundos = Math.floor((diff / 1000) % 60);
+    document.getElementById("contadorSanValentin").textContent =
+      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+  }
+  setInterval(actualizarContadorSanValentin, 1000);
+
 </script>
-
 </body>
 </html>
