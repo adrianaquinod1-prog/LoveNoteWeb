@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,17 +45,8 @@
   <h2 class="text-3xl font-semibold mb-4 text-center">📝 Notas de Amor</h2>
   <div class="max-w-xl mx-auto">
     <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
-    <button onclick="guardarNota()" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
+    <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
     <div id="notesList" class="mt-6 space-y-4"></div>
-  </div>
-</section>
-
-<!-- Imágenes -->
-<section class="mb-16">
-  <h2 class="text-3xl font-semibold mb-4 text-center">📷 Fotos Especiales</h2>
-  <div class="max-w-xl mx-auto">
-    <button onclick="pedirPassword()" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90 mb-4">Subir Imagen</button>
-    <div id="imageList" class="grid grid-cols-2 gap-4"></div>
   </div>
 </section>
 
@@ -64,12 +55,13 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
+  // Tu configuración de Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
+    apiKey: "TU_API_KEY_REAL_AQUI",
     authDomain: "lovenotes-e4c9d.firebaseapp.com",
     databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
     projectId: "lovenotes-e4c9d",
-    storageBucket: "lovenotes-e4c9d.firebasestorage.app",
+    storageBucket: "lovenotes-e4c9d.appspot.com",
     messagingSenderId: "595596507789",
     appId: "1:595596507789:web:533ced8f0b895746d940c4"
   };
@@ -78,47 +70,47 @@
   const db = getDatabase(app);
   const notasRef = ref(db, "notas");
 
-  // Guardar Nota
-  function guardarNota() {
-    const nota = document.getElementById("noteInput").value.trim();
+  const saveButton = document.getElementById("saveButton");
+  const noteInput = document.getElementById("noteInput");
+  const notesList = document.getElementById("notesList");
+
+  saveButton.addEventListener("click", () => {
+    const nota = noteInput.value.trim();
     if (!nota) return;
     push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
-    document.getElementById("noteInput").value = "";
-  }
+    noteInput.value = "";
+  });
 
-  // Eliminar Nota
   function eliminarNota(key) {
     remove(ref(db, "notas/" + key));
   }
 
-  // Mostrar Notas
-  function mostrarNotas() {
-    const contenedor = document.getElementById("notesList");
-    onValue(notasRef, (snapshot) => {
-      contenedor.innerHTML = "";
-      snapshot.forEach((child) => {
-        const nota = child.val();
-        const key = child.key;
-        const div = document.createElement("div");
-        div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
-        div.innerHTML = `
-          <div>
-            <p>${nota.texto}</p>
-            <small class="text-white/60">${nota.fecha}</small>
-          </div>
-          <button class="ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80"></button>
-        `;
-        const btn = div.querySelector("button");
-        btn.textContent = "Eliminar";
-        btn.addEventListener("click", () => eliminarNota(key));
-        contenedor.appendChild(div);
-      });
+  onValue(notasRef, (snapshot) => {
+    notesList.innerHTML = "";
+    snapshot.forEach((child) => {
+      const nota = child.val();
+      const key = child.key;
+      const div = document.createElement("div");
+      div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
+      const p = document.createElement("p");
+      p.textContent = nota.texto;
+      const small = document.createElement("small");
+      small.className = "text-white/60";
+      small.textContent = nota.fecha;
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
+      deleteBtn.textContent = "Eliminar";
+      deleteBtn.addEventListener("click", () => eliminarNota(key));
+      const infoDiv = document.createElement("div");
+      infoDiv.appendChild(p);
+      infoDiv.appendChild(small);
+      div.appendChild(infoDiv);
+      div.appendChild(deleteBtn);
+      notesList.appendChild(div);
     });
-  }
+  });
 
-  mostrarNotas();
-
-  // Contadores
+  // Contador de Tiempo Juntos
   function actualizarTiempoJuntos() {
     const inicio = new Date("2025-01-21T00:00:00");
     const ahora = new Date();
@@ -129,10 +121,12 @@
     diff %= 3600;
     const minutos = Math.floor(diff / 60);
     const segundos = diff % 60;
-    document.getElementById("tiempoJuntos").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+    document.getElementById("tiempoJuntos").textContent =
+      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
   }
   setInterval(actualizarTiempoJuntos, 1000);
 
+  // Contador para San Valentín
   function actualizarContadorSanValentin() {
     const ahora = new Date();
     const anoActual = ahora.getFullYear();
@@ -148,31 +142,6 @@
   }
   setInterval(actualizarContadorSanValentin, 1000);
 
-  // Subir Imagen protegida
-  function pedirPassword() {
-    const pass = prompt("Introduce la contraseña para subir una imagen:");
-    if (pass === "AN1VERSARY") {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "image/*";
-      input.onchange = e => mostrarImagen(e.target.files[0]);
-      input.click();
-    } else {
-      alert("Contraseña incorrecta.");
-    }
-  }
-
-  function mostrarImagen(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.className = "rounded w-full";
-      document.getElementById("imageList").appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  }
 </script>
-
 </body>
 </html>
