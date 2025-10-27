@@ -22,7 +22,7 @@
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen p-6" onclick="desbloquearAudio()">
+<body class="min-h-screen p-6">
 
 <!-- Encabezado -->
 <section class="text-center mb-16">
@@ -147,17 +147,43 @@ setInterval(actualizarContadorSanValentin, 1000);
 
 </script>
 
-<!-- YouTube invisible 505 -->
+<!-- YouTube invisible 505
+     Notes:
+     - autoplay=1&mute=1 so it can start muted (browsers allow muted autoplay)
+     - enablejsapi=1 to allow sending commands (unMute/playVideo)
+     - playsinline=1 to avoid forcing fullscreen on iOS
+-->
 <iframe id="youtube505" width="1" height="1"
-src="https://www.youtube.com/embed/0J2QdDbelmY?autoplay=1&controls=0&loop=1&playlist=0J2QdDbelmY"
+src="https://www.youtube.com/embed/0J2QdDbelmY?autoplay=1&mute=1&controls=0&loop=1&playlist=0J2QdDbelmY&enablejsapi=1&playsinline=1"
 frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 <script>
-function desbloquearAudio() {
-  document.getElementById('mensajeCancion').innerText = "Reproduciendo 505... ❤️‍🔥";
-  // Una interacción desbloquea audio en todos los navegadores
-  document.body.onclick = null;
+const iframe = document.getElementById('youtube505');
+const mensaje = document.getElementById('mensajeCancion');
+
+function desbloquearAudio(e) {
+  // Must be called directly from a user gesture (touchend or click)
+  mensaje.innerText = "Reproduciendo 505... ❤️‍🔥";
+
+  // Tell the YouTube iframe (IFrame API) to unmute and play
+  // PostMessage commands as JSON strings; enablejsapi=1 must be present in src
+  try {
+    iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+  } catch (err) {
+    // ignore — in some cases cross-origin access is blocked; still likely works via postMessage
+    console.warn('Error sending postMessage to iframe', err);
+  }
+
+  // Remove the listeners so this runs only once
+  document.removeEventListener('touchend', desbloquearAudio);
+  document.removeEventListener('click', desbloquearAudio);
 }
+
+// Listen for both touchend (mobile) and click (desktop).
+// Use { once: true } OR remove listeners inside the handler to guarantee single-run.
+document.addEventListener('touchend', desbloquearAudio, { passive: true, once: true });
+document.addEventListener('click', desbloquearAudio, { once: true });
 </script>
 
 </body>
