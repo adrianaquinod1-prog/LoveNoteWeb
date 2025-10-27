@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Love Story 💖</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(to bottom, #301934, #ff6b6b);
+      color: #fff;
+    }
+    .bg-romantic {
+      background: linear-gradient(135deg, #ff6b81, #ff9472);
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen p-6">
+
+<!-- Encabezado -->
+<section class="text-center mb-16">
+  <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
+    Our Love Story 💕
+  </h1>
+  <p class="text-xl text-white/80">Cada momento contigo es un recuerdo eterno</p>
+</section>
+
+<!-- Contadores -->
+<section class="mb-16 text-center">
+  <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
+  <p id="tiempoJuntos" class="text-xl"></p>
+
+  <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
+  <p id="contadorSanValentin" class="text-xl"></p>
+</section>
+
+<!-- Notas -->
+<section class="mb-16">
+  <h2 class="text-3xl font-semibold mb-4 text-center">📝 Notas de Amor</h2>
+  <div class="max-w-xl mx-auto">
+    <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
+    <button onclick="guardarNota()" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
+    <div id="notesList" class="mt-6 space-y-4"></div>
+  </div>
+</section>
+
+<!-- Imágenes -->
+<section class="mb-16">
+  <h2 class="text-3xl font-semibold mb-4 text-center">📷 Fotos Especiales</h2>
+  <div class="max-w-xl mx-auto">
+    <button onclick="pedirPassword()" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90 mb-4">Subir Imagen</button>
+    <div id="imageList" class="grid grid-cols-2 gap-4"></div>
+  </div>
+</section>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
+    authDomain: "lovenotes-e4c9d.firebaseapp.com",
+    databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
+    projectId: "lovenotes-e4c9d",
+    storageBucket: "lovenotes-e4c9d.firebasestorage.app",
+    messagingSenderId: "595596507789",
+    appId: "1:595596507789:web:533ced8f0b895746d940c4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const notasRef = ref(db, "notas");
+
+  // Guardar Nota
+  function guardarNota() {
+    const nota = document.getElementById("noteInput").value.trim();
+    if (!nota) return;
+    push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
+    document.getElementById("noteInput").value = "";
+  }
+
+  // Eliminar Nota
+  function eliminarNota(key) {
+    remove(ref(db, "notas/" + key));
+  }
+
+  // Mostrar Notas
+  function mostrarNotas() {
+    const contenedor = document.getElementById("notesList");
+    onValue(notasRef, (snapshot) => {
+      contenedor.innerHTML = "";
+      snapshot.forEach((child) => {
+        const nota = child.val();
+        const key = child.key;
+        const div = document.createElement("div");
+        div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
+        div.innerHTML = `
+          <div>
+            <p>${nota.texto}</p>
+            <small class="text-white/60">${nota.fecha}</small>
+          </div>
+          <button class="ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80"></button>
+        `;
+        const btn = div.querySelector("button");
+        btn.textContent = "Eliminar";
+        btn.addEventListener("click", () => eliminarNota(key));
+        contenedor.appendChild(div);
+      });
+    });
+  }
+
+  mostrarNotas();
+
+  // Contadores
+  function actualizarTiempoJuntos() {
+    const inicio = new Date("2025-01-21T00:00:00");
+    const ahora = new Date();
+    let diff = Math.floor((ahora - inicio) / 1000);
+    const dias = Math.floor(diff / 86400);
+    diff %= 86400;
+    const horas = Math.floor(diff / 3600);
+    diff %= 3600;
+    const minutos = Math.floor(diff / 60);
+    const segundos = diff % 60;
+    document.getElementById("tiempoJuntos").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+  }
+  setInterval(actualizarTiempoJuntos, 1000);
+
+  function actualizarContadorSanValentin() {
+    const ahora = new Date();
+    const anoActual = ahora.getFullYear();
+    let sv = new Date(`February 14, ${anoActual} 00:00:00`);
+    if (ahora > sv) sv.setFullYear(anoActual + 1);
+    const diff = sv - ahora;
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutos = Math.floor((diff / (1000 * 60)) % 60);
+    const segundos = Math.floor((diff / 1000) % 60);
+    document.getElementById("contadorSanValentin").textContent =
+      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+  }
+  setInterval(actualizarContadorSanValentin, 1000);
+
+  // Subir Imagen protegida
+  function pedirPassword() {
+    const pass = prompt("Introduce la contraseña para subir una imagen:");
+    if (pass === "AN1VERSARY") {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+      input.onchange = e => mostrarImagen(e.target.files[0]);
+      input.click();
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
+
+  function mostrarImagen(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.className = "rounded w-full";
+      document.getElementById("imageList").appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+</script>
+
+</body>
+</html>
