@@ -18,53 +18,26 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
     }
-
-    /* HELLO KITTY */
-    #kittyContainer {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 120px;
-      z-index: 999;
-      text-align: center;
-    }
-
-    #kittyText {
-      margin-top: 8px;
-      padding: 6px 10px;
-      font-size: 13px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(6px);
-      border-radius: 12px;
-      animation: fade 1s infinite alternate;
-    }
-
-    @keyframes fade {
-      from { opacity: 0.6; }
-      to { opacity: 1; }
+    .kitty {
+      width: 160px;
+      margin: auto;
+      margin-top: 10px;
+      filter: drop-shadow(0 0 10px #fff);
     }
   </style>
-
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen p-6">
 
-<!-- Hello Kitty -->
-<div id="kittyContainer">
-  <img src="https://i.imgur.com/TVlH3F1.png" width="120">
-  <div id="kittyText">Hola amor ❤️</div>
-</div>
-
-<!-- Encabezado -->
 <section class="text-center mb-16">
   <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
     Our Love Story 💕
   </h1>
   <p class="text-xl text-white/80">Feliz aniversario mi Ailyn, mi niña, mi mujer, mi todo.
   Espero te guste esta página dedicada a nuestro amor</p>
+  <img class="kitty" src="https://i.imgur.com/m1ZfHCQ.png" alt="Hello Kitty">
 </section>
 
-<!-- Contadores -->
 <section class="mb-16 text-center">
   <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
   <p id="tiempoJuntos" class="text-xl"></p>
@@ -73,7 +46,6 @@
   <p id="contadorSanValentin" class="text-xl"></p>
 </section>
 
-<!-- Notas -->
 <section class="mb-16">
   <h2 class="text-3xl font-semibold mb-4 text-center">📝 Notas de Amor</h2>
   <div class="max-w-xl mx-auto">
@@ -83,19 +55,19 @@
   </div>
 </section>
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "TU_API_KEY_REAL_AQUI",
+    apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
     authDomain: "lovenotes-e4c9d.firebaseapp.com",
     databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
     projectId: "lovenotes-e4c9d",
-    storageBucket: "lovenotes-e4c9d.appspot.com",
+    storageBucket: "lovenotes-e4c9d.firebasestorage.app",
     messagingSenderId: "595596507789",
-    appId: "1:595596507789:web:533ced8f0b895746d940c4"
+    appId: "1:595596507789:web:533ced8f0b895746d940c4",
+    measurementId: "G-6BEVEG72FD"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -142,7 +114,6 @@
     });
   });
 
-  // Contador de Tiempo Juntos
   function actualizarTiempoJuntos() {
     const inicio = new Date("2025-01-21T00:00:00");
     const ahora = new Date();
@@ -158,7 +129,6 @@
   }
   setInterval(actualizarTiempoJuntos, 1000);
 
-  // Contador para San Valentín
   function actualizarContadorSanValentin() {
     const ahora = new Date();
     const anoActual = ahora.getFullYear();
@@ -173,25 +143,6 @@
       `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
   }
   setInterval(actualizarContadorSanValentin, 1000);
-
-
-  // 🐱 HELLO KITTY FRASES
-  const kittyText = document.getElementById("kittyText");
-  const frases = [
-    "Ailyn, eres mi felicidad 💘",
-    "Me encantas en todos los universos ✨",
-    "Tu sonrisa es mi favorita 💞",
-    "Siempre contigo, mi amor 💗",
-    "Eres mi princesa Hello Kitty 🐱💝"
-  ];
-
-  function cambiarFrase() {
-    const index = Math.floor(Math.random() * frases.length);
-    kittyText.textContent = frases[index];
-  }
-
-  setInterval(cambiarFrase, 5000);
-
 </script>
 </body>
 </html>
