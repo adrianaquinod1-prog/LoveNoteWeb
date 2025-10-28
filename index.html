@@ -18,10 +18,42 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
     }
+
+    /* HELLO KITTY */
+    #kittyContainer {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 120px;
+      z-index: 999;
+      text-align: center;
+    }
+
+    #kittyText {
+      margin-top: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      animation: fade 1s infinite alternate;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
   </style>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen p-6">
+
+<!-- Hello Kitty -->
+<div id="kittyContainer">
+  <img src="https://i.imgur.com/TVlH3F1.png" width="120">
+  <div id="kittyText">Hola amor ❤️</div>
+</div>
 
 <!-- Encabezado -->
 <section class="text-center mb-16">
@@ -56,7 +88,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-  // Tu configuración de Firebase
   const firebaseConfig = {
     apiKey: "TU_API_KEY_REAL_AQUI",
     authDomain: "lovenotes-e4c9d.firebaseapp.com",
@@ -143,7 +174,24 @@
   }
   setInterval(actualizarContadorSanValentin, 1000);
 
+
+  // 🐱 HELLO KITTY FRASES
+  const kittyText = document.getElementById("kittyText");
+  const frases = [
+    "Ailyn, eres mi felicidad 💘",
+    "Me encantas en todos los universos ✨",
+    "Tu sonrisa es mi favorita 💞",
+    "Siempre contigo, mi amor 💗",
+    "Eres mi princesa Hello Kitty 🐱💝"
+  ];
+
+  function cambiarFrase() {
+    const index = Math.floor(Math.random() * frases.length);
+    kittyText.textContent = frases[index];
+  }
+
+  setInterval(cambiarFrase, 5000);
+
 </script>
 </body>
 </html>
-
