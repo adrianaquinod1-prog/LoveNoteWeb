@@ -3,254 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Love Page 💖</title>
+  <title>Our Universe of Love 💖</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: 'Playfair Display', serif;
-      background: linear-gradient(to bottom, #301934, #ff6b6b);
-      color: #fff;
-      overflow-x: hidden;
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      color: white;
+      text-align: center;
     }
-    .bg-romantic {
-      background: linear-gradient(135deg, #ff6b81, #ff9472);
-    }
-    .glass {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-    }
-    canvas {
-      position: absolute;
+
+    canvas#universe {
+      position: fixed;
       top: 0;
       left: 0;
-      z-index: 10;
-      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+      gap: 1rem;
+      transition: transform 3s ease, opacity 2s ease;
+    }
+
+    .title-animated {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff6b81, #ff9a9e, #ffd6a5, #ff6b81);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 5s ease infinite;
+      text-shadow: 0 0 25px rgba(255, 182, 193, 0.5);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .btn-next {
+      margin-top: 2rem;
+      padding: 0.8rem 1.6rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b81, #ff9472);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 150, 150, 0.5);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-next:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 150, 150, 0.8);
+    }
+
+    .hyperspace {
+      transform: scale(5) translateZ(800px);
+      opacity: 0;
+    }
+
+    @media (max-width: 768px) {
+      .title-animated { font-size: 2.3rem; }
+      #helloKitty { width: 220px; }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen p-6">
+<body>
+  <canvas id="universe"></canvas>
 
-  <!-- Hello Kitty -->
-  <section class="text-center mb-16">
-    <img src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png" alt="Hello Kitty" class="mx-auto mt-6 w-48 opacity-70">
+  <section id="hero" class="hero">
+    <img id="helloKitty" src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png" alt="Hello Kitty" class="w-48 opacity-90 drop-shadow-lg">
+    <h1 class="title-animated">Our Universe of Love 💕</h1>
+    <p class="text-lg text-white/80 max-w-md">Te amo mi nena, espero te guste esta página dedicada a nuestro amor. 💫</p>
+    <button id="nextBtn" class="btn-next">Next Page →</button>
   </section>
 
-  <!-- Historia -->
-  <section class="text-center mb-16">
-    <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
-      Our Love Story 💕
-    </h1>
-    <p class="text-xl text-white/80">Te amo mi nena, espero te guste esta web page dedicada a nuestro amor.</p>
-  </section>
-
-  <!-- Contadores -->
-  <section class="mb-16 text-center">
-    <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
-    <p id="tiempoJuntos" class="text-xl"></p>
-    <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
-    <p id="contadorSanValentin" class="text-xl"></p>
-  </section>
-
-  <!-- Notas -->
-  <section class="mb-16 text-center">
-    <h2 class="text-3xl font-semibold mb-4">📝 Notas de Amor</h2>
-
-    <!-- Contraseña -->
-    <div id="passwordSection" class="max-w-md mx-auto bg-white/10 p-6 rounded-lg">
-      <p class="mb-3 text-white/80">🔒 Ingresa la contraseña para ver las notas</p>
-      <input type="password" id="passwordInput" placeholder="Contraseña..." class="w-full p-3 rounded text-black mb-4" />
-      <button id="checkPasswordButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Entrar</button>
-      <p id="passwordError" class="text-red-400 mt-3 hidden">Contraseña incorrecta 💔</p>
-    </div>
-
-    <!-- Notas ocultas -->
-    <div id="notesSection" class="hidden max-w-xl mx-auto mt-8">
-      <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
-      <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
-
-      <!-- Música -->
-      <div class="mt-6">
-        <button id="playMusicBtn" class="bg-pink-600 px-6 py-3 rounded-full font-semibold hover:bg-pink-700 transition">
-          ▶️ Reproducir "505"
-        </button>
-        <audio id="loveSong" src="505 - Arctic Monkeys.mp3"></audio>
-      </div>
-
-      <div id="notesList" class="mt-6 space-y-4"></div>
-    </div>
-  </section>
-
-  <!-- Tulipanes -->
-  <section id="tulipanes" class="relative w-full h-[900px] flex items-center justify-center overflow-hidden">
-    <div id="fondoTulipanes" class="absolute inset-0 bg-[url('https://images.pexels.com/photos/66896/tulips-flowers-fish-eye-red-66896.jpeg?cs=srgb&dl=pexels-pixabay-66896.jpg&fm=jpg')] bg-center bg-no-repeat bg-cover opacity-100 transition-opacity duration-1000 z-0"></div>
-    <canvas id="particulasTulipanes" width="1920" height="900"></canvas>
-  </section>
-
-  <!-- Script principal -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
-      authDomain: "lovenotes-e4c9d.firebaseapp.com",
-      databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
-      projectId: "lovenotes-e4c9d",
-      storageBucket: "lovenotes-e4c9d.firebasestorage.app",
-      messagingSenderId: "595596507789",
-      appId: "1:595596507789:web:533ced8f0b895746d940c4",
-      measurementId: "G-6BEVEG72FD"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const notasRef = ref(db, "notas");
-
-    const saveButton = document.getElementById("saveButton");
-    const noteInput = document.getElementById("noteInput");
-    const notesList = document.getElementById("notesList");
-
-    // Contraseña
-    const correctPassword = "TeAmoAilyn";
-    const passwordInput = document.getElementById("passwordInput");
-    const passwordSection = document.getElementById("passwordSection");
-    const notesSection = document.getElementById("notesSection");
-    const passwordError = document.getElementById("passwordError");
-    const checkPasswordButton = document.getElementById("checkPasswordButton");
-
-    checkPasswordButton.addEventListener("click", () => {
-      const input = passwordInput.value.trim();
-      if (input === correctPassword) {
-        passwordSection.classList.add("hidden");
-        notesSection.classList.remove("hidden");
-      } else {
-        passwordError.classList.remove("hidden");
-        setTimeout(() => passwordError.classList.add("hidden"), 2000);
-      }
-    });
-
-    // Guardar notas
-    saveButton.addEventListener("click", () => {
-      const nota = noteInput.value.trim();
-      if (!nota) return;
-      push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
-      noteInput.value = "";
-    });
-
-    // Eliminar notas
-    function eliminarNota(key) {
-      remove(ref(db, "notas/" + key));
-    }
-
-    // Mostrar notas
-    onValue(notasRef, (snapshot) => {
-      notesList.innerHTML = "";
-      snapshot.forEach((child) => {
-        const nota = child.val();
-        const key = child.key;
-        const div = document.createElement("div");
-        div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
-        const p = document.createElement("p");
-        p.textContent = nota.texto;
-        const small = document.createElement("small");
-        small.className = "text-white/60";
-        small.textContent = nota.fecha;
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
-        deleteBtn.textContent = "Eliminar";
-        deleteBtn.addEventListener("click", () => eliminarNota(key));
-        const infoDiv = document.createElement("div");
-        infoDiv.appendChild(p);
-        infoDiv.appendChild(small);
-        div.appendChild(infoDiv);
-        div.appendChild(deleteBtn);
-        notesList.appendChild(div);
-      });
-    });
-
-    // Música
-    const music = document.getElementById("loveSong");
-    const playBtn = document.getElementById("playMusicBtn");
-    let isPlaying = false;
-
-    playBtn.addEventListener("click", () => {
-      if (!isPlaying) {
-        music.play();
-        playBtn.textContent = "⏸️ Pausar \"505\"";
-        playBtn.classList.add("bg-pink-700");
-        isPlaying = true;
-      } else {
-        music.pause();
-        playBtn.textContent = "▶️ Reproducir \"505\"";
-        playBtn.classList.remove("bg-pink-700");
-        isPlaying = false;
-      }
-    });
-
-    // Tiempo juntos
-    function actualizarTiempoJuntos() {
-      const inicio = new Date("2025-01-21T00:00:00");
-      const ahora = new Date();
-      let diff = Math.floor((ahora - inicio) / 1000);
-      const dias = Math.floor(diff / 86400);
-      diff %= 86400;
-      const horas = Math.floor(diff / 3600);
-      diff %= 3600;
-      const minutos = Math.floor(diff / 60);
-      const segundos = diff % 60;
-      document.getElementById("tiempoJuntos").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-    }
-    setInterval(actualizarTiempoJuntos, 1000);
-
-    // San Valentín
-    function actualizarContadorSanValentin() {
-      const ahora = new Date();
-      const anoActual = ahora.getFullYear();
-      let sv = new Date(`February 14, ${anoActual} 00:00:00`);
-      if (ahora > sv) sv.setFullYear(anoActual + 1);
-      const diff = sv - ahora;
-      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutos = Math.floor((diff / (1000 * 60)) % 60);
-      const segundos = Math.floor((diff / 1000) % 60);
-      document.getElementById("contadorSanValentin").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-    }
-    setInterval(actualizarContadorSanValentin, 1000);
-
-    // 🌷 Animación de pétalos
-    const canvas = document.getElementById("particulasTulipanes");
+  <script>
+    const canvas = document.getElementById("universe");
     const ctx = canvas.getContext("2d");
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    let stars = [];
+    let speed = 0.5;
 
-    const petalos = Array.from({ length: 40 }).map(() => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 15 + 5,
-      speedY: Math.random() * 2 + 1,
-      speedX: Math.random() * 1 - 0.5,
-      opacity: Math.random() * 0.7 + 0.3,
-      color: `rgba(255, ${Math.floor(Math.random()*120 + 100)}, ${Math.floor(Math.random()*150 + 150)}, `
-    }));
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
 
-    function animarPetalos() {
-      ctx.clearRect(0, 0, width, height);
-      petalos.forEach(p => {
-        ctx.beginPath();
-        ctx.fillStyle = p.color + p.opacity + ")";
-        ctx.ellipse(p.x, p.y, p.size, p.size / 2, Math.PI / 4, 0, 2 * Math.PI);
-        ctx.fill();
-        p.y += p.speedY;
-        p.x += p.speedX;
-        if (p.y > height + 20) {
-          p.y = -10;
-          p.x = Math.random() * width;
+    for (let i = 0; i < 250; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5,
+        d: Math.random() * 0.5
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.beginPath();
+      stars.forEach(s => {
+        ctx.moveTo(s.x, s.y);
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+      });
+      ctx.fill();
+      updateStars();
+    }
+
+    function updateStars() {
+      stars.forEach(s => {
+        s.y += s.d * speed;
+        if (s.y > canvas.height) {
+          s.y = 0;
+          s.x = Math.random() * canvas.width;
         }
       });
-      requestAnimationFrame(animarPetalos);
+      requestAnimationFrame(drawStars);
     }
-    animarPetalos();
+
+    drawStars();
+
+    const nextBtn = document.getElementById("nextBtn");
+    const hero = document.getElementById("hero");
+
+    nextBtn.addEventListener("click", () => {
+      hero.classList.add("hyperspace");
+      let t = 0;
+      const interval = setInterval(() => {
+        if (speed < 10) speed += 0.6;
+        t += 100;
+        if (t >= 3000) {
+          clearInterval(interval);
+          window.location.href = "notes.html";
+        }
+      }, 100);
+    });
   </script>
 </body>
 </html>
