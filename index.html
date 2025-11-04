@@ -10,6 +10,7 @@
       font-family: 'Playfair Display', serif;
       background: linear-gradient(to bottom, #301934, #ff6b6b);
       color: #fff;
+      overflow-x: hidden;
     }
     .bg-romantic {
       background: linear-gradient(135deg, #ff6b81, #ff9472);
@@ -18,211 +19,238 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
     }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen p-6">
 
-<!-- Hello Kitty inicial -->
-<section class="text-center mb-16">
-  <img src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png"
-       alt="Hello Kitty" class="mx-auto mt-6 w-48 opacity-70">
-</section>
+  <!-- Hello Kitty -->
+  <section class="text-center mb-16">
+    <img src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png" alt="Hello Kitty" class="mx-auto mt-6 w-48 opacity-70">
+  </section>
 
-<!-- Historia -->
-<section class="text-center mb-16">
-  <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
-    Our Love Story 💕
-  </h1>
-  <p class="text-xl text-white/80">
-    Feliz aniversario mi Ailyn, mi niña, mi mujer, mi todo.
-    Espero te guste esta página dedicada a nuestro amor
-  </p>
-</section>
+  <!-- Historia -->
+  <section class="text-center mb-16">
+    <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
+      Our Love Story 💕
+    </h1>
+    <p class="text-xl text-white/80">Te amo mi nena, espero te guste esta web page dedicada a nuestro amor.</p>
+  </section>
 
-<!-- Tiempo y contador -->
-<section class="mb-16 text-center">
-  <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
-  <p id="tiempoJuntos" class="text-xl"></p>
+  <!-- Contadores -->
+  <section class="mb-16 text-center">
+    <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
+    <p id="tiempoJuntos" class="text-xl"></p>
+    <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
+    <p id="contadorSanValentin" class="text-xl"></p>
+  </section>
 
-  <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
-  <p id="contadorSanValentin" class="text-xl"></p>
-</section>
+  <!-- Notas -->
+  <section class="mb-16 text-center">
+    <h2 class="text-3xl font-semibold mb-4">📝 Notas de Amor</h2>
 
-<!-- Notas de amor -->
-<section class="mb-16">
-  <h2 class="text-3xl font-semibold mb-4 text-center">📝 Notas de Amor</h2>
-  <div class="max-w-xl mx-auto">
-    <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
-    <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
-    <div id="notesList" class="mt-6 space-y-4"></div>
-  </div>
-</section>
+    <!-- Contraseña -->
+    <div id="passwordSection" class="max-w-md mx-auto bg-white/10 p-6 rounded-lg">
+      <p class="mb-3 text-white/80">🔒 Ingresa la contraseña para ver las notas</p>
+      <input type="password" id="passwordInput" placeholder="Contraseña..." class="w-full p-3 rounded text-black mb-4" />
+      <button id="checkPasswordButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Entrar</button>
+      <p id="passwordError" class="text-red-400 mt-3 hidden">Contraseña incorrecta 💔</p>
+    </div>
 
-<!-- TULIPANES + CORAZONES -->
-<section id="tulipanes" class="relative w-full h-[900px] flex items-center justify-center overflow-hidden">
-  <div id="fondoTulipanes" 
-       class="absolute inset-0 bg-[url('https://images.pexels.com/photos/66896/tulips-flowers-fish-eye-red-66896.jpeg?cs=srgb&dl=pexels-pixabay-66896.jpg&fm=jpg')] 
-              bg-center bg-no-repeat bg-cover 
-              opacity-0 transition-opacity duration-1000 z-0">
-  </div>
-  <canvas id="particulasTulipanes" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
-</section>
+    <!-- Notas ocultas -->
+    <div id="notesSection" class="hidden max-w-xl mx-auto mt-8">
+      <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
+      <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+      <!-- Música -->
+      <div class="mt-6">
+        <button id="playMusicBtn" class="bg-pink-600 px-6 py-3 rounded-full font-semibold hover:bg-pink-700 transition">
+          ▶️ Reproducir "505"
+        </button>
+        <audio id="loveSong" src="505 - Arctic Monkeys.mp3"></audio>
+      </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
-    authDomain: "lovenotes-e4c9d.firebaseapp.com",
-    databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
-    projectId: "lovenotes-e4c9d",
-    storageBucket: "lovenotes-e4c9d.firebasestorage.app",
-    messagingSenderId: "595596507789",
-    appId: "1:595596507789:web:533ced8f0b895746d940c4",
-    measurementId: "G-6BEVEG72FD"
-  };
+      <div id="notesList" class="mt-6 space-y-4"></div>
+    </div>
+  </section>
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const notasRef = ref(db, "notas");
+  <!-- Tulipanes -->
+  <section id="tulipanes" class="relative w-full h-[900px] flex items-center justify-center overflow-hidden">
+    <div id="fondoTulipanes" class="absolute inset-0 bg-[url('https://images.pexels.com/photos/66896/tulips-flowers-fish-eye-red-66896.jpeg?cs=srgb&dl=pexels-pixabay-66896.jpg&fm=jpg')] bg-center bg-no-repeat bg-cover opacity-100 transition-opacity duration-1000 z-0"></div>
+    <canvas id="particulasTulipanes" width="1920" height="900"></canvas>
+  </section>
 
-  const saveButton = document.getElementById("saveButton");
-  const noteInput = document.getElementById("noteInput");
-  const notesList = document.getElementById("notesList");
+  <!-- Script principal -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-  saveButton.addEventListener("click", () => {
-    const nota = noteInput.value.trim();
-    if (!nota) return;
-    push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
-    noteInput.value = "";
-  });
-
-  function eliminarNota(key) {
-    remove(ref(db, "notas/" + key));
-  }
-
-  onValue(notasRef, (snapshot) => {
-    notesList.innerHTML = "";
-    snapshot.forEach((child) => {
-      const nota = child.val();
-      const key = child.key;
-      const div = document.createElement("div");
-      div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
-      const p = document.createElement("p");
-      p.textContent = nota.texto;
-      const small = document.createElement("small");
-      small.className = "text-white/60";
-      small.textContent = nota.fecha;
-      const deleteBtn = document.createElement("button");
-      deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
-      deleteBtn.textContent = "Eliminar";
-      deleteBtn.addEventListener("click", () => eliminarNota(key));
-      const infoDiv = document.createElement("div");
-      infoDiv.appendChild(p);
-      infoDiv.appendChild(small);
-      div.appendChild(infoDiv);
-      div.appendChild(deleteBtn);
-      notesList.appendChild(div);
-    });
-  });
-
-  // CONTADOR TIEMPO
-  function actualizarTiempoJuntos() {
-    const inicio = new Date("2025-01-21T00:00:00");
-    const ahora = new Date();
-    let diff = Math.floor((ahora - inicio) / 1000);
-    const dias = Math.floor(diff / 86400);
-    diff %= 86400;
-    const horas = Math.floor(diff / 3600);
-    diff %= 3600;
-    const minutos = Math.floor(diff / 60);
-    const segundos = diff % 60;
-    document.getElementById("tiempoJuntos").textContent =
-      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-  }
-  setInterval(actualizarTiempoJuntos, 1000);
-
-  // CONTADOR SAN VALENTÍN
-  function actualizarContadorSanValentin() {
-    const ahora = new Date();
-    const anoActual = ahora.getFullYear();
-    let sv = new Date(`February 14, ${anoActual} 00:00:00`);
-    if (ahora > sv) sv.setFullYear(anoActual + 1);
-    const diff = sv - ahora;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutos = Math.floor((diff / (1000 * 60)) % 60);
-    const segundos = Math.floor((diff / 1000) % 60);
-    document.getElementById("contadorSanValentin").textContent =
-      `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
-  }
-  setInterval(actualizarContadorSanValentin, 1000);
-
-  // PARALLAX TULIPANES
-  window.addEventListener('scroll', () => {
-    const tulipanes = document.getElementById('tulipanes');
-    const fondo = document.getElementById('fondoTulipanes');
-    const top = tulipanes.getBoundingClientRect().top;
-    const windowHeight = window.innerHeight;
-    const minOpacity = 0.3;
-    const maxOpacity = 0.9;
-    if (top < windowHeight && top > 0) {
-      let opacity = minOpacity + (1 - top / windowHeight) * (maxOpacity - minOpacity);
-      fondo.style.opacity = opacity;
-    } else if (top <= 0) {
-      fondo.style.opacity = maxOpacity;
-    } else {
-      fondo.style.opacity = 0;
-    }
-  });
-
-  // CORAZONES
-  const canvas = document.getElementById("particulasTulipanes");
-  const ctx = canvas.getContext("2d");
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-
-  const corazones = [];
-  function crearCorazon() {
-    return {
-      x: Math.random() * canvas.width,
-      y: canvas.height + Math.random() * 100,
-      size: Math.random() * 20 + 10,
-      speed: Math.random() * 2 + 1,
-      opacity: Math.random() * .8 + .3
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7Bo2mneDZLa1DeqZdbr7RqEyJMzfxbjg",
+      authDomain: "lovenotes-e4c9d.firebaseapp.com",
+      databaseURL: "https://lovenotes-e4c9d-default-rtdb.firebaseio.com",
+      projectId: "lovenotes-e4c9d",
+      storageBucket: "lovenotes-e4c9d.firebasestorage.app",
+      messagingSenderId: "595596507789",
+      appId: "1:595596507789:web:533ced8f0b895746d940c4",
+      measurementId: "G-6BEVEG72FD"
     };
-  }
 
-  for (let i = 0; i < 40; i++) corazones.push(crearCorazon());
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const notasRef = ref(db, "notas");
 
-  function dibujar() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    corazones.forEach(c => {
-      ctx.globalAlpha = c.opacity;
-      ctx.fillStyle = "#ff4d6d";
-      ctx.beginPath();
-      ctx.moveTo(c.x, c.y);
-      ctx.bezierCurveTo(c.x - c.size, c.y - c.size,
-                        c.x - c.size * 2, c.y + c.size / 2,
-                        c.x, c.y + c.size);
-      ctx.bezierCurveTo(c.x + c.size * 2, c.y + c.size / 2,
-                        c.x + c.size, c.y - c.size,
-                        c.x, c.y);
-      ctx.fill();
-      c.y -= c.speed;
-      if (c.y < -50) Object.assign(c, crearCorazon());
+    const saveButton = document.getElementById("saveButton");
+    const noteInput = document.getElementById("noteInput");
+    const notesList = document.getElementById("notesList");
+
+    // Contraseña
+    const correctPassword = "TeAmoAilyn";
+    const passwordInput = document.getElementById("passwordInput");
+    const passwordSection = document.getElementById("passwordSection");
+    const notesSection = document.getElementById("notesSection");
+    const passwordError = document.getElementById("passwordError");
+    const checkPasswordButton = document.getElementById("checkPasswordButton");
+
+    checkPasswordButton.addEventListener("click", () => {
+      const input = passwordInput.value.trim();
+      if (input === correctPassword) {
+        passwordSection.classList.add("hidden");
+        notesSection.classList.remove("hidden");
+      } else {
+        passwordError.classList.remove("hidden");
+        setTimeout(() => passwordError.classList.add("hidden"), 2000);
+      }
     });
-    requestAnimationFrame(dibujar);
-  }
-  dibujar();
 
-  window.addEventListener("resize", () => {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-  });
+    // Guardar notas
+    saveButton.addEventListener("click", () => {
+      const nota = noteInput.value.trim();
+      if (!nota) return;
+      push(notasRef, { texto: nota, fecha: new Date().toLocaleDateString() });
+      noteInput.value = "";
+    });
 
-</script>
+    // Eliminar notas
+    function eliminarNota(key) {
+      remove(ref(db, "notas/" + key));
+    }
+
+    // Mostrar notas
+    onValue(notasRef, (snapshot) => {
+      notesList.innerHTML = "";
+      snapshot.forEach((child) => {
+        const nota = child.val();
+        const key = child.key;
+        const div = document.createElement("div");
+        div.className = "p-4 rounded bg-white/10 flex justify-between items-center";
+        const p = document.createElement("p");
+        p.textContent = nota.texto;
+        const small = document.createElement("small");
+        small.className = "text-white/60";
+        small.textContent = nota.fecha;
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "ml-4 px-2 py-1 bg-red-500 rounded hover:opacity-80";
+        deleteBtn.textContent = "Eliminar";
+        deleteBtn.addEventListener("click", () => eliminarNota(key));
+        const infoDiv = document.createElement("div");
+        infoDiv.appendChild(p);
+        infoDiv.appendChild(small);
+        div.appendChild(infoDiv);
+        div.appendChild(deleteBtn);
+        notesList.appendChild(div);
+      });
+    });
+
+    // Música
+    const music = document.getElementById("loveSong");
+    const playBtn = document.getElementById("playMusicBtn");
+    let isPlaying = false;
+
+    playBtn.addEventListener("click", () => {
+      if (!isPlaying) {
+        music.play();
+        playBtn.textContent = "⏸️ Pausar \"505\"";
+        playBtn.classList.add("bg-pink-700");
+        isPlaying = true;
+      } else {
+        music.pause();
+        playBtn.textContent = "▶️ Reproducir \"505\"";
+        playBtn.classList.remove("bg-pink-700");
+        isPlaying = false;
+      }
+    });
+
+    // Tiempo juntos
+    function actualizarTiempoJuntos() {
+      const inicio = new Date("2025-01-21T00:00:00");
+      const ahora = new Date();
+      let diff = Math.floor((ahora - inicio) / 1000);
+      const dias = Math.floor(diff / 86400);
+      diff %= 86400;
+      const horas = Math.floor(diff / 3600);
+      diff %= 3600;
+      const minutos = Math.floor(diff / 60);
+      const segundos = diff % 60;
+      document.getElementById("tiempoJuntos").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+    }
+    setInterval(actualizarTiempoJuntos, 1000);
+
+    // San Valentín
+    function actualizarContadorSanValentin() {
+      const ahora = new Date();
+      const anoActual = ahora.getFullYear();
+      let sv = new Date(`February 14, ${anoActual} 00:00:00`);
+      if (ahora > sv) sv.setFullYear(anoActual + 1);
+      const diff = sv - ahora;
+      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutos = Math.floor((diff / (1000 * 60)) % 60);
+      const segundos = Math.floor((diff / 1000) % 60);
+      document.getElementById("contadorSanValentin").textContent = `${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`;
+    }
+    setInterval(actualizarContadorSanValentin, 1000);
+
+    // 🌷 Animación de pétalos
+    const canvas = document.getElementById("particulasTulipanes");
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const petalos = Array.from({ length: 40 }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 15 + 5,
+      speedY: Math.random() * 2 + 1,
+      speedX: Math.random() * 1 - 0.5,
+      opacity: Math.random() * 0.7 + 0.3,
+      color: `rgba(255, ${Math.floor(Math.random()*120 + 100)}, ${Math.floor(Math.random()*150 + 150)}, `
+    }));
+
+    function animarPetalos() {
+      ctx.clearRect(0, 0, width, height);
+      petalos.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color + p.opacity + ")";
+        ctx.ellipse(p.x, p.y, p.size, p.size / 2, Math.PI / 4, 0, 2 * Math.PI);
+        ctx.fill();
+        p.y += p.speedY;
+        p.x += p.speedX;
+        if (p.y > height + 20) {
+          p.y = -10;
+          p.x = Math.random() * width;
+        }
+      });
+      requestAnimationFrame(animarPetalos);
+    }
+    animarPetalos();
+  </script>
 </body>
 </html>
