@@ -8,74 +8,117 @@
   <style>
     body {
       font-family: 'Playfair Display', serif;
-      background: linear-gradient(to bottom, #1b2735, #ff6b81);
+      margin: 0;
+      overflow: hidden;
       color: #fff;
-      overflow-x: hidden;
       text-align: center;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     }
-    .bg-romantic {
-      background: linear-gradient(135deg, #ff6b81, #ff9472);
+
+    canvas#universe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      transition: transform 2.5s ease-out;
+      transform: scale(0.8);
+      opacity: 0;
     }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+
+    canvas#universe.show {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .container {
+      position: relative;
       z-index: 10;
-      pointer-events: none;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      color: #333;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff6b81, #ff9472);
+      color: white;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      margin-top: 0.8rem;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+
+    .note {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen p-6">
+<body>
 
-  <!-- Hello Kitty -->
-  <section class="text-center mb-16">
-    <img src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png" alt="Hello Kitty" class="mx-auto mt-6 w-40 opacity-80">
-  </section>
+  <!-- Fondo galáctico -->
+  <canvas id="universe"></canvas>
 
-  <!-- Historia -->
-  <section class="text-center mb-16">
-    <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
-      Our Love Story 💕
-    </h1>
-    <p class="text-xl text-white/80">Te amo mi nena, espero te guste esta web page dedicada a nuestro amor.</p>
-  </section>
+  <div class="container">
+    <section class="text-center mb-16">
+      <img src="https://www.pngarts.com/files/11/Cartoon-Hello-Kitty-PNG-Download-Image.png"
+           alt="Hello Kitty" class="mx-auto mt-6 w-40 opacity-80">
+    </section>
 
-  <!-- Contadores -->
-  <section class="mb-16 text-center">
-    <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
-    <p id="tiempoJuntos" class="text-xl"></p>
-    <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
-    <p id="contadorSanValentin" class="text-xl"></p>
-  </section>
+    <section class="text-center mb-16">
+      <h1 class="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-yellow-300">
+        Our Love Story 💕
+      </h1>
+      <p class="text-xl text-white/80">Te amo mi nena, espero te guste esta web page dedicada a nuestro amor.</p>
+    </section>
 
-  <!-- Notas -->
-  <section class="mb-16 text-center">
-    <h2 class="text-3xl font-semibold mb-4">📝 Notas de Amor</h2>
+    <!-- Contadores -->
+    <section class="mb-16 text-center">
+      <h2 class="text-3xl font-semibold mb-4">⏳ Tiempo Juntos</h2>
+      <p id="tiempoJuntos" class="text-xl"></p>
+      <h2 class="text-3xl font-semibold mt-8 mb-4">❤️ Contador para San Valentín</h2>
+      <p id="contadorSanValentin" class="text-xl"></p>
+    </section>
 
-    <!-- Contraseña -->
-    <div id="passwordSection" class="max-w-md mx-auto bg-white/10 p-6 rounded-lg">
-      <p class="mb-3 text-white/80">🔒 Ingresa la contraseña para ver las notas</p>
-      <input type="password" id="passwordInput" placeholder="Contraseña..." class="w-full p-3 rounded text-black mb-4" />
-      <button id="checkPasswordButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Entrar</button>
-      <p id="passwordError" class="text-red-400 mt-3 hidden">Contraseña incorrecta 💔</p>
-    </div>
+    <!-- Notas -->
+    <section class="mb-16 text-center">
+      <h2 class="text-3xl font-semibold mb-4">📝 Notas de Amor</h2>
 
-    <!-- Notas ocultas -->
-    <div id="notesSection" class="hidden max-w-xl mx-auto mt-8">
-      <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
-      <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
-      <div id="notesList" class="mt-6 space-y-4"></div>
-    </div>
-  </section>
+      <!-- Contraseña -->
+      <div id="passwordSection" class="max-w-md mx-auto bg-white/10 p-6 rounded-lg">
+        <p class="mb-3 text-white/80">🔒 Ingresa la contraseña para ver las notas</p>
+        <input type="password" id="passwordInput" placeholder="Contraseña..." class="w-full p-3 rounded text-black mb-4" />
+        <button id="checkPasswordButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Entrar</button>
+        <p id="passwordError" class="text-red-400 mt-3 hidden">Contraseña incorrecta 💔</p>
+      </div>
 
-  <!-- Tulipanes -->
-  <section id="tulipanes" class="relative w-full h-[900px] flex items-center justify-center overflow-hidden">
-    <div id="fondoTulipanes" class="absolute inset-0 bg-[url('https://images.pexels.com/photos/66896/tulips-flowers-fish-eye-red-66896.jpeg?cs=srgb&dl=pexels-pixabay-66896.jpg&fm=jpg')] bg-center bg-no-repeat bg-cover opacity-100 transition-opacity duration-1000 z-0"></div>
-    <canvas id="particulasTulipanes" width="1920" height="900"></canvas>
-  </section>
+      <!-- Notas ocultas -->
+      <div id="notesSection" class="hidden max-w-xl mx-auto mt-8">
+        <textarea id="noteInput" class="w-full p-4 text-black rounded mb-2" rows="4" placeholder="Escribe algo bonito..."></textarea>
+        <button id="saveButton" class="bg-romantic px-4 py-2 rounded font-semibold hover:opacity-90">Guardar Nota</button>
+        <div id="notesList" class="mt-6 space-y-4"></div>
+      </div>
+    </section>
+  </div>
 
-  <!-- Script principal -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
@@ -182,39 +225,51 @@
     }
     setInterval(actualizarContadorSanValentin, 1000);
 
-    // 🌷 Pétalos
-    const canvas = document.getElementById("particulasTulipanes");
-    const ctx = canvas.getContext("2d");
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    // 🌌 Fondo galáctico animado (sincronizado con la intro)
+    const canvasGalaxy = document.getElementById("universe");
+    const ctxGalaxy = canvasGalaxy.getContext("2d");
+    let stars = [];
 
-    const petalos = Array.from({ length: 40 }).map(() => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 15 + 5,
-      speedY: Math.random() * 2 + 1,
-      speedX: Math.random() * 1 - 0.5,
-      opacity: Math.random() * 0.7 + 0.3,
-      color: `rgba(255, ${Math.floor(Math.random()*120 + 100)}, ${Math.floor(Math.random()*150 + 150)}, `
-    }));
+    function resizeGalaxy() {
+      canvasGalaxy.width = window.innerWidth;
+      canvasGalaxy.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeGalaxy);
+    resizeGalaxy();
 
-    function animarPetalos() {
-      ctx.clearRect(0, 0, width, height);
-      petalos.forEach(p => {
-        ctx.beginPath();
-        ctx.fillStyle = p.color + p.opacity + ")";
-        ctx.ellipse(p.x, p.y, p.size, p.size / 2, Math.PI / 4, 0, 2 * Math.PI);
-        ctx.fill();
-        p.y += p.speedY;
-        p.x += p.speedX;
-        if (p.y > height + 20) {
-          p.y = -10;
-          p.x = Math.random() * width;
+    for (let i = 0; i < 250; i++) {
+      stars.push({
+        x: Math.random() * canvasGalaxy.width,
+        y: Math.random() * canvasGalaxy.height,
+        r: Math.random() * 1.5,
+        d: Math.random() * 0.5
+      });
+    }
+
+    function drawGalaxy() {
+      ctxGalaxy.clearRect(0, 0, canvasGalaxy.width, canvasGalaxy.height);
+      ctxGalaxy.fillStyle = "rgba(255,255,255,0.8)";
+      ctxGalaxy.beginPath();
+      stars.forEach(s => {
+        ctxGalaxy.moveTo(s.x, s.y);
+        ctxGalaxy.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+      });
+      ctxGalaxy.fill();
+      stars.forEach(s => {
+        s.y += s.d;
+        if (s.y > canvasGalaxy.height) {
+          s.y = 0;
+          s.x = Math.random() * canvasGalaxy.width;
         }
       });
-      requestAnimationFrame(animarPetalos);
+      requestAnimationFrame(drawGalaxy);
     }
-    animarPetalos();
+
+    // animación de entrada suave (de atrás hacia adelante)
+    setTimeout(() => {
+      canvasGalaxy.classList.add("show");
+      drawGalaxy();
+    }, 500);
   </script>
 </body>
 </html>
